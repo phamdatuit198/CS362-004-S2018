@@ -1,0 +1,117 @@
+        -:    0:Source:cardtest3.c
+        -:    0:Graph:cardtest3.gcno
+        -:    0:Data:cardtest3.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:	Author: Dat Pham
+        -:    3:	Class: CS362
+        -:    4:	Term: Spring 2018
+        -:    5:*/
+        -:    6:
+        -:    7:#include <string.h>
+        -:    8:#include <stdio.h>
+        -:    9:#include <assert.h>
+        -:   10:#include "rngs.h"
+        -:   11:#include "dominion.h"
+        -:   12:#include "dominion_helpers.h"
+        -:   13:
+        -:   14:
+        9:   15:int checkResult(int x, int y){
+        -:   16:	
+        9:   17:	if(x == y){
+        -:   18:		
+        8:   19:		printf("PASSED\n");
+        8:   20:		return 0;
+        -:   21:	}else{
+        1:   22:		printf("FAILED\n");
+        1:   23:		return 1;
+        -:   24:	}
+        -:   25:}
+        -:   26:
+        1:   27:int main(){
+        1:   28:	int failTotal = 0;
+        1:   29:	int resultFromCheck = 0;
+        1:   30:	int seed = 1000;
+        1:   31:	int bonus = 0;
+        1:   32:	int numplayer = 2;
+        1:   33:	int player1=0;
+        1:   34:	int player2=1;
+        1:   35:	int handpos =0;
+        1:   36:	int firstChoice=0;
+        1:   37:	int secondChoice =0;
+        1:   38:	int thirdChoice =0;
+        -:   39:	
+        -:   40:	
+        1:   41:	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+        -:   42:			sea_hag, tribute, smithy, council_room};
+        -:   43:	
+        -:   44:	struct gameState gState;
+        -:   45:	struct gameState tempState;
+        1:   46:	printf("\n------------------------------------TESTING village of Card------------------------------\n");
+        -:   47:	
+        1:   48:	memset(&gState,23,sizeof(struct gameState));
+        1:   49:    memset(&tempState,23,sizeof(struct gameState));
+        -:   50:	
+        -:   51:	// create a state
+        1:   52:    initializeGame(numplayer, k, seed, &gState);
+        -:   53:	
+        -:   54:	//save state
+        1:   55:	memcpy(&tempState, &gState, sizeof(struct gameState));
+        1:   56:	cardEffect(village, firstChoice, secondChoice, thirdChoice, &gState, handpos, &bonus);
+        -:   57:	
+        -:   58:	
+        1:   59:	printf("\nTest player gains 1 cards: ");
+        1:   60:	resultFromCheck = checkResult(gState.handCount[player1],tempState.handCount[player1]);
+        1:   61:	if(resultFromCheck == 1)
+    #####:   62:		failTotal++;
+        -:   63:	
+        1:   64:	printf("\nTest player gains 1 cards from pile: ");
+        1:   65:	resultFromCheck = checkResult(gState.deckCount[player1],tempState.deckCount[player1]-1);
+        1:   66:	if(resultFromCheck == 1)
+    #####:   67:		failTotal++;
+        -:   68:	
+        1:   69:	printf("\nTest player has more two actions: ");
+        1:   70:	resultFromCheck = checkResult(tempState.numActions+2,gState.numActions);
+        1:   71:	if(resultFromCheck == 1)
+        1:   72:		failTotal++;
+        -:   73:	
+        1:   74:	printf("\n---Check data of another player wasn't affected---\n");
+        1:   75:	printf("Deck card don't change: ");
+        1:   76:	resultFromCheck = checkResult(gState.deckCount[player2],tempState.deckCount[player2]);
+        1:   77:	if(resultFromCheck == 1)
+    #####:   78:		failTotal++;
+        -:   79:	
+        1:   80:	printf("Hand card don't change: ");
+        1:   81:	resultFromCheck = checkResult(gState.handCount[player2],tempState.handCount[player2]);
+        1:   82:	if(resultFromCheck == 1)
+    #####:   83:		failTotal++;
+        -:   84:	
+        -:   85:	
+        1:   86:	printf("\n---Check another type cards don't change---\n");
+        1:   87:	printf("The number curse cards don't change: ");
+        1:   88:	resultFromCheck = checkResult(gState.supplyCount[curse],tempState.supplyCount[curse]);
+        1:   89:	if(resultFromCheck == 1)
+    #####:   90:		failTotal++;
+        1:   91:	printf("The number estate victory cards don't change: ");
+        1:   92:	resultFromCheck = checkResult(gState.supplyCount[estate],tempState.supplyCount[estate]);
+        1:   93:	if(resultFromCheck == 1)
+    #####:   94:		failTotal++;
+        1:   95:	printf("The number duchy victory cards don't change: ");
+        1:   96:	resultFromCheck = checkResult(gState.supplyCount[duchy],tempState.supplyCount[duchy]);
+        1:   97:	if(resultFromCheck == 1)
+    #####:   98:		failTotal++;
+        1:   99:	printf("The number province victory cards don't change: ");
+        1:  100:	resultFromCheck = checkResult(gState.supplyCount[province],tempState.supplyCount[province]);
+        1:  101:	if(resultFromCheck == 1)
+    #####:  102:		failTotal++;
+        -:  103:	
+        1:  104:	if(failTotal!=0){
+        1:  105:		printf("\nTEST FAILED, the number fails: %d\n",failTotal);
+        -:  106:	}else{
+    #####:  107:		printf("\nTEST SUCCESSFULLY\n");
+        -:  108:	}
+        -:  109:	
+        1:  110:	printf("\n---------------------------------End Testing village of Card----------------------------------\n");
+        1:  111:	return 0;
+        -:  112:}

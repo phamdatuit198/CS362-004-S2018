@@ -781,11 +781,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-	  RefactorAdventurer(currentPlayer, temphand, z, state)
+	  RefactorAdventurer(currentPlayer, temphand, z, state);
       return 0;
 			
     case council_room:
-      RefactorCouncilRoomCard(currentPlayer, handPos, state)	
+      RefactorCouncilRoomCard(currentPlayer, handPos, state);	
       return 0;
 			
     case feast:
