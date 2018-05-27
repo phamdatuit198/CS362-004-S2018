@@ -1,0 +1,97 @@
+        -:    0:Source:unittest2.c
+        -:    0:Graph:unittest2.gcno
+        -:    0:Data:unittest2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:	Author: Dat Pham
+        -:    3:	Class: CS362
+        -:    4:	Term: Spring 2018
+        -:    5:	Description: write unittest for function buyCard Validates the card being played can be played then calls cardEffect to play the card
+        -:    6:*/
+        -:    7:#include <string.h>
+        -:    8:#include <stdio.h>
+        -:    9:#include <math.h>
+        -:   10:#include <stdlib.h>
+        -:   11:#include <assert.h>
+        -:   12:#include "dominion.h"
+        -:   13:#include "dominion_helpers.h"
+        -:   14:#include "rngs.h"
+        -:   15:
+        5:   16:int checkResult(int x, int y){
+        -:   17:	
+        5:   18:	if(x == y){
+        -:   19:		
+        5:   20:		printf("PASSED\n");
+        5:   21:		return 0;
+        -:   22:	}else{
+    #####:   23:		printf("FAILED\n");
+    #####:   24:		return 1;
+        -:   25:	}
+        -:   26:}
+        -:   27:
+        1:   28:int main(){
+        -:   29:	
+        1:   30:	int seed = 1000;
+        -:   31:	struct gameState gState;
+        1:   32:	int resultFromBuyCard = 0;
+        1:   33:	int resultFromCheck = 0;
+        1:   34:	int failTotal = 0;
+        1:   35:	int k[10] = {adventurer, council_room, feast, gardens, mine,
+        -:   36:               remodel, smithy, village, baron, great_hall};
+        -:   37:			   
+        1:   38:	printf("\n------------------------------------TESTING buyCard()------------------------------\n");
+        1:   39:	printf("\n Description: Validates the card being played can be played then calls cardEffect to play the card");
+        1:   40:	printf("\n---------------------------------------------------------------------------------------------------\n");
+        1:   41:	memset(&gState,23,sizeof(struct gameState));
+        1:   42:	initializeGame(2, k, seed, &gState);
+        -:   43:	
+        1:   44:	printf("\nTesting if you do not have any buys left\n");
+        1:   45:	gState.numBuys = 0;
+        1:   46:	gState.coins = 5;
+        1:   47:	resultFromBuyCard = buyCard(2,&gState);
+        1:   48:	resultFromCheck = checkResult(resultFromBuyCard,-1);
+        1:   49:	if(resultFromCheck == 1)
+    #####:   50:			failTotal++;
+        -:   51:		
+        1:   52:	printf("\nTesting if you do not enought coins\n");
+        1:   53:	gState.numBuys = 2;
+        1:   54:	gState.coins = 2;
+        1:   55:	resultFromBuyCard = buyCard(2,&gState);
+        1:   56:	resultFromCheck = checkResult(resultFromBuyCard,-1);
+        1:   57:	if(resultFromCheck == 1)
+    #####:   58:			failTotal++;
+        -:   59:	
+        1:   60:	printf("\nTesting a perfect purchase\n");
+        1:   61:	gState.numBuys = 2;
+        1:   62:	gState.coins = 10;
+        1:   63:	resultFromBuyCard = buyCard(2,&gState);
+        1:   64:	resultFromCheck = checkResult(resultFromBuyCard,0);
+        1:   65:	if(resultFromCheck == 1)
+    #####:   66:			failTotal++;
+        -:   67:	
+        1:   68:	printf("\nTesting when we have exact coins amount\n");
+        1:   69:	gState.numBuys = 1;
+        1:   70:	gState.coins = 5;
+        1:   71:	resultFromBuyCard = buyCard(2,&gState);
+        1:   72:	resultFromCheck = checkResult(resultFromBuyCard,0);
+        1:   73:	if(resultFromCheck == 1)
+    #####:   74:			failTotal++;
+        -:   75:	
+        1:   76:	printf("\nTesting there are not any of that type of card left\n");
+        1:   77:	gState.numBuys = 1;
+        1:   78:	gState.coins = 5;
+        1:   79:	resultFromBuyCard = buyCard(6,&gState);
+        1:   80:	resultFromCheck = checkResult(resultFromBuyCard,-1);
+        1:   81:	if(resultFromCheck == 1)
+    #####:   82:			failTotal++;
+        -:   83:	
+        1:   84:	if(failTotal!=0){
+    #####:   85:		printf("\nTEST FAILED, the number fails: %d\n",failTotal);
+        -:   86:	}else{
+        1:   87:		printf("\nTEST SUCCESSFULLY\n");
+        -:   88:	}
+        1:   89:	printf("\n---------------------------------End Testing buyCard()----------------------------------\n");
+        -:   90:	
+        1:   91:	return 0;
+        -:   92:}

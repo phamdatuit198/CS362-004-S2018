@@ -1,0 +1,91 @@
+        -:    0:Source:unittest4.c
+        -:    0:Graph:unittest4.gcno
+        -:    0:Data:unittest4.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:Author: Dat Pham
+        -:    3:Class: CS 362
+        -:    4:
+        -:    5:Description: UnitTest function gainCard of Dominion
+        -:    6:*/
+        -:    7:#include <string.h>
+        -:    8:#include <stdio.h>
+        -:    9:#include <assert.h>
+        -:   10:#include "dominion.h"
+        -:   11:#include "dominion_helpers.h"
+        -:   12:#include "rngs.h"
+        -:   13:
+        -:   14:
+        5:   15:int checkResult(int x, int y){
+        -:   16:	
+        5:   17:	if(x == y){
+        -:   18:		
+        5:   19:		printf("PASSED\n");
+        5:   20:		return 0;
+        -:   21:	}else{
+    #####:   22:		printf("FAILED\n");
+    #####:   23:		return 1;
+        -:   24:	}
+        -:   25:}
+        -:   26:
+        1:   27:int main(){
+        1:   28:	int failTotal = 0;
+        1:   29:	int resultFromGainCard = 0;
+        1:   30:	int resultFromCheck = 0;
+        1:   31:	int seed = 1000;
+        1:   32:	int k[10] = {adventurer, council_room, feast, gardens, mine,
+        -:   33:               remodel, smithy, village, baron, great_hall};
+        -:   34:	struct gameState gState;
+        -:   35:	
+        -:   36:	
+        1:   37:	printf("\n------------------------------------TESTING gainCard()------------------------------\n");
+        1:   38:	printf("\n Description: Adds a soecufuc card ti a players hand, deck, or trash. Checks for enough supply of the card then puts the card in the directed location");
+        1:   39:	printf("\n---------------------------------------------------------------------------------------------------\n");
+        1:   40:	memset(&gState,23,sizeof(struct gameState));
+        1:   41:	initializeGame(2, k, seed, &gState);
+        -:   42:	
+        1:   43:	gState.supplyCount[gold] = 0;
+        1:   44:	printf("\nCheck Gold supply pile is empty. \n");
+        1:   45:	resultFromGainCard = gainCard(gold,&gState,0,0);
+        1:   46:	resultFromCheck = checkResult(resultFromGainCard, -1); 
+        1:   47:	if(resultFromCheck == 1)
+    #####:   48:		failTotal++;
+        1:   49:	gState.supplyCount[gold] = 30;
+        -:   50:	
+        1:   51:	printf("\nCheck add card to deck\n");
+        1:   52:	int deck = gState.deckCount[0];
+        1:   53:	gainCard(gold,&gState,1,0);
+        1:   54:	resultFromCheck = checkResult(gState.deckCount[0],deck+1);
+        1:   55:	if(resultFromCheck == 1)
+    #####:   56:		failTotal++;
+        -:   57:	
+        1:   58:	printf("\nCheck add card to hand\n");
+        1:   59:	int hand = gState.handCount[0];
+        1:   60:	gainCard(gold,&gState,2,0);
+        1:   61:	resultFromCheck = checkResult(gState.handCount[0],hand+1);
+        1:   62:	if(resultFromCheck == 1)
+    #####:   63:		failTotal++;
+        -:   64:	
+        1:   65:	printf("\nCheck add card to discard\n");
+        1:   66:	int discard = gState.discardCount[0];
+        1:   67:	gainCard(gold,&gState,0,0);
+        1:   68:	resultFromCheck = checkResult(gState.discardCount[0],discard+1);
+        1:   69:	if(resultFromCheck == 1)
+    #####:   70:		failTotal++;
+        -:   71:	
+        1:   72:	printf("\nCheck decrease gold supply\n");
+        1:   73:	int goldSupply = gState.supplyCount[gold];
+        1:   74:	gainCard(gold,&gState,0,0);
+        1:   75:	resultFromCheck = checkResult(goldSupply -1, gState.supplyCount[gold]);
+        1:   76:	if(resultFromCheck == 1)
+    #####:   77:		failTotal++;
+        -:   78:	
+        1:   79:	if(failTotal!=0){
+    #####:   80:		printf("\nTEST FAILED, the number fails: %d\n",failTotal);
+        -:   81:	}else{
+        1:   82:		printf("\nTEST SUCCESSFULLY\n");
+        -:   83:	}
+        1:   84:	printf("\n---------------------------------End Testing gainCard()----------------------------------\n");
+        1:   85:	return 0;
+        -:   86:}

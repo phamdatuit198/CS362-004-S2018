@@ -1,0 +1,87 @@
+        -:    0:Source:unittest3.c
+        -:    0:Graph:unittest3.gcno
+        -:    0:Data:unittest3.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:	Author: Dat Pham
+        -:    3:	Class: CS362
+        -:    4:	Term: Spring 2018
+        -:    5:	Description: write unittest for function shuffled is getter for gameState returning the card in 
+        -:    6:					a specific position of the hand
+        -:    7:*/
+        -:    8:#include <string.h>
+        -:    9:#include <stdio.h>
+        -:   10:#include <assert.h>
+        -:   11:#include "dominion.h"
+        -:   12:#include "dominion_helpers.h"
+        -:   13:#include "rngs.h"
+        -:   14:
+        3:   15:int checkResult(int x, int y){
+        -:   16:	
+        3:   17:	if(x == y){
+        -:   18:		
+        3:   19:		printf("PASSED\n");
+        3:   20:		return 0;
+        -:   21:	}else{
+    #####:   22:		printf("FAILED\n");
+    #####:   23:		return 1;
+        -:   24:	}
+        -:   25:}
+        -:   26:
+        1:   27:int main(){
+        -:   28:	
+        1:   29:	int seed = 1000;
+        -:   30:	struct gameState gState;
+        1:   31:	int numPlayer = 2;
+        1:   32:	int player = 0;
+        1:   33:	int resultFromShuffle = 0;
+        1:   34:	int resultFromCheck = 0;
+        1:   35:	int failTotal = 0;
+        -:   36:	
+        -:   37:	//kingdom cards
+        1:   38:	int k[10] =  {adventurer, council_room, feast, gardens, mine,
+        -:   39:						remodel, smithy, village, baron, great_hall};
+        -:   40:						
+        1:   41:	printf("\n--------------------------------Testing function shuffle()------------------------------------------");
+        1:   42:	printf("\nDescription: function is getter for gameState returning the card in a specific position of the hand");
+        1:   43:	printf("\n---------------------------------------------------------------------------------------------------\n");
+        1:   44:	memset(&gState,23,sizeof(struct gameState));
+        1:   45:	initializeGame(numPlayer,k,seed,&gState);
+        -:   46:	
+        1:   47:	printf("\nChecking if deck count is 0 of player\n");
+        1:   48:	gState.deckCount[player] = 0;
+        1:   49:	resultFromShuffle = shuffle(player,&gState);
+        1:   50:	resultFromCheck = checkResult(-1,resultFromShuffle);
+        1:   51:	if(resultFromCheck == 1)
+    #####:   52:		failTotal++;
+        -:   53:	
+        1:   54:	printf("\nChecking if deck count is 5\n");
+        1:   55:	gState.deckCount[player] = 5;
+        1:   56:	shuffle(player,&gState);
+        1:   57:	resultFromCheck = checkResult(5,gState.deckCount[player]);
+        1:   58:	if(resultFromCheck == 1)
+    #####:   59:		failTotal++;
+        -:   60:	
+        1:   61:	printf("\nChecking cards are shuffled already\n");
+        1:   62:	int card1 = gState.deck[player][0];
+        1:   63:	shuffle(player,&gState);
+        1:   64:	int card2 = gState.deck[player][0];
+        1:   65:	if(card1 != card2){
+        -:   66:		
+        1:   67:		resultFromCheck = checkResult(0,0);
+        -:   68:	}else{
+    #####:   69:		resultFromCheck = checkResult(0,2);
+        -:   70:	}
+        1:   71:	if(resultFromCheck == 1)
+    #####:   72:		failTotal++;
+        -:   73:	
+        1:   74:	if(failTotal!=0){
+    #####:   75:		printf("\nTEST FAILED, the number fails: %d\n",failTotal);
+        -:   76:	}else{
+        1:   77:		printf("\nTEST SUCCESSFULLY\n");
+        -:   78:	}
+        1:   79:	printf("\n---------------------------------End Testing shuffle()----------------------------------\n");
+        -:   80:	
+        1:   81:	return 0;
+        -:   82:}

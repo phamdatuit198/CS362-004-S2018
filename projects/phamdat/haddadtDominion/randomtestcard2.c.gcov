@@ -1,0 +1,108 @@
+        -:    0:Source:randomtestcard2.c
+        -:    0:Graph:randomtestcard2.gcno
+        -:    0:Data:randomtestcard2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:	Author: Dat Pham
+        -:    3:	CS 362
+        -:    4:	
+        -:    5:*/
+        -:    6:#include <assert.h>
+        -:    7:#include <stdio.h>
+        -:    8:#include <time.h>
+        -:    9:#include <string.h>
+        -:   10:#include <stdlib.h>
+        -:   11:#include <math.h>
+        -:   12:
+        -:   13:#include "dominion.h"
+        -:   14:#include "dominion_helpers.h"
+        -:   15:#include "rngs.h"
+        -:   16:
+        -:   17:int failCardEffect = 0;
+        -:   18:int failDiscardCard = 0;
+        -:   19:int failDrawCard = 0;
+        -:   20:int failDeckHandCount = 0;
+        -:   21:
+        -:   22:
+    10000:   23:void checkCard(struct gameState *state,int player) {
+        -:   24:  
+        -:   25:	int result;
+        -:   26:	int drawCard1,drawCard2,drawCard3;
+        -:   27:    struct gameState tempState;
+        -:   28:
+        -:   29:    //save state to tempState
+    10000:   30:    memcpy(&tempState,state,sizeof(struct gameState));
+        -:   31:
+        -:   32:	
+    10000:   33:    cardEffect(smithy,0,0,0,state,0,0);
+        -:   34:	
+        -:   35:	//discardCard
+    10000:   36:	result = discardCard(0,player,&tempState,0);
+        -:   37:	
+    10000:   38:	if(result)
+    #####:   39:		failDiscardCard++;
+        -:   40:	
+    10000:   41:    drawCard1 = drawCard(player,&tempState);
+    10000:   42:    drawCard2 = drawCard(player,&tempState);
+    10000:   43:    drawCard3 = drawCard(player,&tempState);
+        -:   44:
+        -:   45:    // check if drawcard failed
+    10000:   46:	if(tempState.deckCount[player] != 0){
+     9973:   47:		if (drawCard1 == -1) {
+    #####:   48:			failDrawCard++;
+        -:   49:		}
+     9973:   50:		if (drawCard2 == -1) {
+    #####:   51:			failDrawCard++;
+        -:   52:		}
+     9973:   53:		if (drawCard3 == -1) {
+    #####:   54:			failDrawCard++;
+        -:   55:		}
+        -:   56:	}
+        -:   57:
+        -:   58:    // check if the hand and deck have amount don't same
+    10000:   59:    if(!(state->handCount[player]==tempState.handCount[player] 
+    #####:   60:		&&state->deckCount[player] == tempState.deckCount[player]))
+    10000:   61:			failDeckHandCount++;
+    10000:   62:}
+        -:   63:
+        -:   64:
+        1:   65:int main () {
+        -:   66:    
+        1:   67:    int loop = 10000;
+        -:   68:    int i, n, player;
+        1:   69:	int total = 0;
+        -:   70:    struct gameState state;
+        1:   71:    srand(time(NULL));
+        -:   72:	
+        1:   73:	printf("\n----------- RANDOM TEST ------------");
+        1:   74:    printf("\n Testing function RefactorSmithyCard()");
+        1:   75:    printf("\n------------------------------------");
+        -:   76:	
+        -:   77:    // random the game state
+    10001:   78:    for (n = 0; n < loop; n++) {
+263010000:   79:        for (i = 0; i < sizeof(struct gameState); i++)
+263000000:   80:            ((char*)&state)[i] = floor(Random() * 256);
+        -:   81:        
+        -:   82:        // randomly select appropriate values
+    10000:   83:        player = floor(Random() * MAX_PLAYERS);
+    10000:   84:		state.whoseTurn = player;
+        -:   85:		
+    10000:   86:        state.playedCardCount = floor(Random() * (MAX_DECK-1));
+    10000:   87:		state.handCount[player] = floor(Random() * MAX_HAND);
+    10000:   88:		state.deckCount[player] = floor(Random() * MAX_DECK);
+    10000:   89:        state.discardCount[player] = floor(Random() * MAX_DECK);
+        -:   90:           
+        -:   91:        // call the check function
+    10000:   92:        checkCard(&state,player);
+        -:   93:    }
+        1:   94:    total = failCardEffect + failDrawCard + failDiscardCard + failDeckHandCount;
+        -:   95:       
+        1:   96:	printf("\n\n\n----- RESULT RANDOM TEST---------\n");
+        1:   97:	printf("\nTotal FAILED : %d",total);
+        1:   98:	printf("\nThe amount failed failed drawCard(): %d",failDrawCard);
+        1:   99:	printf("\nThe amount failed failed discardCard() failed: %d",failDiscardCard);
+        1:  100:	printf("\nCount hand and desk don't match: %d\n",failDeckHandCount);
+        -:  101:
+        1:  102:    return 0;
+        -:  103:}
